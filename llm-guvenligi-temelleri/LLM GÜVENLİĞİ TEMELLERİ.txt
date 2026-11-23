@@ -1,0 +1,260 @@
+Büyük Dil Modelleri (Large Language Models, LLM'ler), insanların makinelerle etkileşimini temelden değiştirdi. Bu sistemlere nasıl saldıracağımızı veya savunacağımızı anlamadan önce bunların içeriden nasıl çalıştığını anlamamız gerekiyor. Bu bölüm, modern LLM'lerin arkasındaki mimariye, mekanizmalara ve temel kavramlara derin, güvenlik odaklı bir giriş sağlar.
+
+
+
+LLM (Large Language Model) Nedir?
+Büyük Dil Modeli (Large Language Model, LLM), insan benzeri dili tahmin etmek ve oluşturmak için büyük miktarda metin verisi üzerinde eğitilmiş bir tür yapay zeka sistemidir. ChatGPT, Claude veya Gemini'ye bir soru yazdığınızda model, bir insan gibi "düşünmez" veya "anlamaz". Bunun yerine çok karmaşık bir istatistiksel hesaplama yapar: Eğitim sırasında gördüğü tüm metinlere göre üretilecek bir sonraki token (kelime veya alt kelime) hangisidir?
+
+Bu ayrım güvenlik profesyonelleri için kritik öneme sahiptir. Modelin doğruluk kavramı yok, gizlilik bilinci yok ve yerleşik bir etik pusulası yok. "Biliyor" veya "inanıyor" gibi görünen her şey, milyarlarca parametre boyunca örüntü tanımanın ortaya çıkan bir özelliğidir. Bir model tehlikeli bir soruyu yanıtlamayı reddettiğinde, bu ahlaki yargıyı uygulamıyor demektir; bu, uyum eğitimi adı verilen bir aşamada öğrenilen kalıpları takip ediyor demektir. Bu, prensipte hizalamanın atlanabileceği anlamına gelir.
+
+Modern LLM aileleri küçük open-weight modellerden büyük hosted frontier sistemlere kadar uzanır. Parametre sayısı, context window (bağlam penceresi), multimodal yetenekler ve araç entegrasyonları sağlayıcıya ve sürüme göre değişir. Bu nedenle güvenlik değerlendirmesi belirli bir model adına değil, modelin gerçek yeteneklerine, entegrasyonlarına ve yetki sınırlarına dayanmalıdır.
+
+Bu eğitim hazırlanırken model manzarası hızla değişen birkaç ana aile etrafında şekillenmektedir: OpenAI tarafında GPT-5.5 geniş kullanıma açık flagship modeldir; GPT-5.6 ise sınırlı preview erişimindedir. Anthropic tarafında Claude Fable 5, Claude Opus 4.8, Claude Sonnet 5 ve Claude Haiku 4.5 aileleri; Google tarafında Gemini 3.x/3.5 ailesi; Meta tarafında ise Llama 4 Scout ve Llama 4 Maverick gibi open-weight modeller öne çıkar. Bu liste bir eğitim snapshot'ıdır; gerçek bir değerlendirmede model adı, context window, cutoff, tool desteği ve veri kullanım kuralları sağlayıcının resmi dokümantasyonundan ve test edilen dağıtımdan doğrulanmalıdır.
+
+Transformer Mimarisi (Transformatör)
+Her modern LLM, Vaswani ve arkadaşlarının 2017 tarihli "Attention Is All You Need" makalesinde tanıtılan Transformer mimarisi üzerine inşa edilmiştir. Transformer'ı anlamak çok önemlidir çünkü LLM'lerdeki Prompt Injection'dan eğitim verilerinin çıkarılmasına kadar birçok güvenlik açığı, bu mimarinin bilgiyi işleme biçimiyle yakından ilişkilidir.
+
+Transformer Öncesindeki Sorun
+Transformers'tan önce, dil işlemeye yönelik baskın mimariler Tekrarlayan Sinir Ağları (RNN'ler) ve Uzun Kısa Süreli Bellek ağları (LSTM'ler) idi. Bu modeller, metni bir cümleyi soldan sağa okur gibi sırayla, her defasında bir kelime olarak işliyordu. Bu ardışık işlemenin iki büyük sorunu vardı:
+
+Vanishing gradients (sönümlenen gradyanlar): Model, uzun bir cümlenin sonuna ulaştığında, başında ne olduğunu büyük ölçüde "unutmuştu".
+Paralelleştirme yok: Her kelime bir öncekine bağlı olduğundan eğitim son derece yavaştı ve modern GPU paralelliğinden yararlanamıyordu.
+Transformer, self-attention (öz-dikkat) adı verilen ve modelin bir dizideki tüm tokenlara aynı anda bakmasına ve hangi tokenların birbiriyle en alakalı olduğunu belirlemesine olanak tanıyan bir mekanizmayı tanıtarak her iki sorunu da çözdü.
+
+Transformer Nasıl Çalışır?
+Bir Transformer, girişi aşağıdaki aşamalardan geçerek işler:
+
+1. Adım: Tokenization (Tokenizasyon)
+
+Ham metin önce tokenlere bölünür. Bir sonraki alt bölümde tokenizasyonu ayrıntılı olarak ele alacağız.
+
+2. Adım: Embedding (Vektör Temsili)
+
+Her token, yüksek boyutlu sayısal bir vektöre (tipik olarak 768 ila 12.288 boyut) dönüştürülür. Bu vektör, benzer kelimelerin benzer vektörlere sahip olduğu matematiksel bir alanda token'ın anlamını temsil eder. Örneğin, "kral" ve "kraliçe" vektörleri birbirine "kral" ve "bisiklet"ten daha yakın olacaktır.
+
+3. Adım: Positional Encoding (Konumsal Kodlama)
+
+Transformer tüm tokenları aynı anda işlediğinden (sırayla işlem yapan RNN'lerin aksine), doğal bir sözcük sırası anlayışına sahip değildir. Konumsal kodlama, her bir token'ın dizideki konumu hakkında bilgi ekler. Bu olmasaydı, model "Paspasın üzerine oturan kedi" ve "Paspas kedinin üzerine oturdu" ifadesini aynı şekilde ele alırdı.
+
+4. Adım: Self-Attention (Öz-Dikkat)
+
+Bu temel mekanizmadır. Model, her bir token için üç vektör hesaplar:
+
+Query (Q; Sorgu): "Neyi arıyorum?"
+Key (K; Anahtar): "İçimde ne var?"
+Value (V; Değer): "Hangi bilgileri sağlıyorum?"
+Herhangi iki token arasındaki attention score (dikkat skoru), bir token'ın Query vektörü ile diğer token'ın Key vektörünün dot product (nokta çarpımı) değeri üzerinden hesaplanır. Yüksek skorlar, bu tokenların birbirleriyle oldukça alakalı olduğu anlamına gelir. Her token'ın nihai çıktısı, ağırlıkların attention score değerleri olduğu tüm Value vektörlerinin ağırlıklı toplamıdır.
+
+Örnek cümle: "Nehir kenarındaki kıyı sular altında kaldı"
+
+"kıyı" kelimesini işlerken:
+
+"Nehir" ve "sular altında kaldı" ifadelerine yüksek attention -> anlam: riverbank (nehir kıyısı, coğrafi bağlam)
+Örnek cümle: "Banka kredi başvurumu onayladı"
+
+"Banka" kelimesini işlerken:
+
+"kredi" ve "onayladı" ifadelerine yüksek attention -> anlam: financial institution (finans kurumu)
+Aynı kelime bağlama bağlı olarak farklı temsillere sahiptir. Buna "bağlamsal" anlayış denmesinin nedeni budur.
+
+5. Adım: Multi-Head Attention (Çok Başlıklı Dikkat)
+
+Transformer, attention'ı bir kez hesaplamak yerine paralel olarak birden çok kez hesaplar (genellikle 12 ila 96 attention head). Her head farklı türde ilişkilere odaklanabilir: Bir head sözdizimsel ilişkilere (özne-fiil uyumu), diğeri anlamsal ilişkilere (konu tutarlılığı) ve diğeri konumsal ilişkilere (yakındaki kelimeler) odaklanabilir.
+
+6. Adım: Feed-Forward Network (İleri Beslemeli Ağ)
+
+Attention aşamasından sonra her token'ın temsili bir feed-forward neural network (ileri beslemeli sinir ağı) katmanından geçer. Bu ağ, modelin tek başına attention ile yakalayamayacağı daha karmaşık örüntüleri yakalamasına olanak tanıyan doğrusal olmayan dönüşümler uygular.
+
+7. Adım: Layer Stacking (Katman Yığınlama)
+
+4-6 arasındaki adımlar birçok kez tekrarlanır (tipik olarak 32 ila 96 katman). Her katman daha fazla soyutlama ekler. İlk katmanlar yüzey düzeyindeki kalıpları (gramer, sözdizimi) yakalama eğilimindeyken, sonraki katmanlar daha yüksek düzeydeki kalıpları (anlam bilimi, akıl yürütme, dünya bilgisi) yakalar.
+
+8. Adım: Output Projection (Çıktı Projeksiyonu)
+
+Son katmanın çıktısı, tüm sözcük dağarcığı boyunca bir olasılık dağılımına yansıtılır. Model bir sonraki tokenı bu olasılıklara göre seçer.
+
+Bu Güvenlik Açısından Neden Önemli?
+Transformer mimarisini anlamak, çeşitli güvenlik sonuçlarını ortaya çıkarır:
+
+Attention bağlama bağlıdır: Model, her tokenı kendi context window'undaki (bağlam penceresindeki) diğer tüm tokenlara göre yorumlar. Bu, bir saldırganın attention weight'leri (dikkat ağırlıkları) değiştiren kullanıcı girdisi hazırlayarak modelin bir sistem prompt'u yorumlama biçimini etkileyebileceği anlamına gelir.
+
+Ayrıcalıklı bellek bölgesi yok: Çekirdek ve kullanıcı alanına sahip bir CPU'nun aksine, Transformer, context window'daki (bağlam penceresindeki) tüm tokenları eşit şekilde ele alır. Sistem prompt'ları, kullanıcı mesajları ve getirilen belgelerin tümü aynı dikkat alanında bulunur. Prompt Injection'ın işe yaramasının temel nedeni budur.
+
+Katman katman işleme fırsatlar yaratır: Her katman gösterimi dönüştürür. Belirli katmanlardan yararlanmak için adversarial girdiler oluşturulabilir ve farklı saldırı teknikleri, işleme pipeline'ının farklı düzeylerini hedef alır.
+
+Tokenizasyon (Tokenization)
+Tokenizasyon, ham metni modelin fiilen işlediği sayısal tokenlere dönüştürme işlemidir. Tokenization kavramını anlamak, token kaçakçılığı ve token limitinin kötüye kullanılması da dahil olmak üzere çeşitli güvenlik teknikleri için çok önemlidir.
+
+Tokenizasyon Nasıl Çalışır?
+Modern LLM'ler, metni karakter karakter veya kelime kelime işlemez. Bunun yerine Bayt Çifti Kodlama (BPE), WordPiece veya SentencePiece gibi alt kelime belirleme algoritmalarını kullanırlar. Bu algoritmalar metni sık karşılaşılan alt kelime birimlerine böler.
+
+Örnek tokenizasyon:
+
+Giriş metni: "Siber güvenlik, yapay zeka güvenliği için önemlidir"
+Tokenlar: ["Siber", "güvenlik", "önemlidir", "için", "Yapay Zeka", "güvenlik"]
+Token ID'leri: [34424, 22706, 374, 3062, 369, 15592, 7296]
+Başka örnekler:
+
+"unhappiness" -> ["un", "happiness"]; model bunu iki ayrı token olarak görür.
+"ChatGPT" -> ["Chat", "GPT"]
+"sk-proj-abc123" -> ["sk", "-", "proj", "-", "abc", "123"]
+Tokenizasyonun Güvenlik Etkileri
+Token Sınırı İstismarı: Her modelin karakterlerle değil tokenlarla ölçülen bir maksimum context window'u (bağlam penceresi) vardır. Tokenization'ı anlayan bir saldırgan, minimum görünür karakterle maksimum token tüketen girdiler oluşturabilir veya bunun tersi de geçerlidir.
+
+Token Kaçakçılığı: Tokenlaştırma karakterleri beklenmedik şekillerde bölebildiğinden veya birleştirebildiğinden, saldırganlar anahtar kelimeye dayalı filtreleri atlayan girdiler üretebilir. Örneğin, "bomba" kelimesini arayan bir içerik filtresi, saldırganın "b-o-m-b" yazması durumunda tokenizer'ın engellenen kelimeden farklı tokenlar üretmesi nedeniyle onu yakalayamayabilir.
+
+Dil Farklılıkları: Farklı diller farklı şekilde tokenize edilir. İngilizce metin genellikle verimlidir (kelime başına yaklaşık 1 token), Çince, Japonca, Korece ve benzeri diller ise kavram başına daha fazla token kullanabilir. Bu, hem context window kullanımını hem de çoğunlukla İngilizce veriler üzerinde eğitilen güvenlik filtrelerinin etkinliğini etkiler.
+
+Dil bazında tokenizasyon örnekleri:
+
+Türkçe "Merhaba": yaklaşık 1 token
+Çince "你好": çoğu tokenizer'da 2 token
+Arapça "مرحبا": tokenizer'a bağlı olarak yaklaşık 3-5 token
+Bu nedenle ağırlıklı olarak İngilizce token pattern'leri üzerinde eğitilmiş güvenlik filtreleri, diğer dillerdeki zararlı içeriği tespit etmede daha az etkili olabilir.
+
+Attention Mekanizması
+Attention mekanizması, LLM güvenlik açıklarını anlamak için en önemli kavramlardan biridir ve özel olarak ele alınmalıdır.
+
+Scaled Dot-Product Attention (Ölçekli Nokta Çarpımı Dikkati)
+Dikkatin matematiksel formülü:
+
+Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) * V
+
+Burada:
+
+Q: Query matrix; her token'ın ne aradığı
+K: Key matrix; her token'ın ne sunduğu
+V: Value matrix; taşınan asıl bilgi
+d_k: Key vector boyutu, yani ölçekleme faktörü
+softmax: Ham skorları toplamı 1 olan olasılıklara dönüştürür
+sqrt(d_k) ile bölme, nokta çarpımlarının aşırı büyümesini önler. Aksi halde softmax dağılımı çok keskinleşebilir; bir token neredeyse tüm attention'ı alırken diğerleri neredeyse hiç katkı vermez.
+
+Context Window (Bağlam Penceresi)
+Context window (bağlam penceresi), modelin aynı anda işleyebileceği toplam token sayısıdır. Buna her şey dahildir: sistem prompt, konuşma geçmişi, getirilen belgeler, kullanıcı girişi ve modelin kendi ürettiği çıktı.
+
+Yetenek katmanına göre context window örnekleri:
+
+Model / mimari tipi	Tipik context yaklaşımı
+Küçük veya yerel instruction modelleri	Binlerce ila on binlerce token
+Yaygın hosted chat modelleri	On binlerce ila yüz binlerce token
+Uzun bağlamlı hosted modeller	Yüz binlerce ila bir milyondan fazla token
+Özel retrieval mimarileri	Uzun bağlamı harici bellek veya RAG ile birleştirebilir
+Kesin bağlam limitleri sağlayıcıya, model sürümüne, hesap katmanına ve API moduna göre sık değişir. Değerlendirme sırasında statik eğitim materyaline güvenmek yerine test edilen dağıtımın dokümante edilmiş limitini doğrulayın.
+
+Güvenlik açısından context window, erişim kontrolü olmayan paylaşılan bir alandır. Model, güvenilir bir sistem prompt'tan gelen tokenlar ile güvenilmeyen kullanıcı girdisinden gelen tokenlar arasında mimari olarak ayrım yapamaz. Hepsi aynı attention hesaplamalarına katılır. Bu sınırlama, Prompt Injection güvenlik açıklarının temel nedenidir.
+
+Causal (Autoregressive) Attention
+Metin oluşturmak için kullanılan LLM'ler, autoregressive attention olarak da bilinen causal attention kullanır. Bu, N. token üretilirken modelin yalnızca 1'den N-1'e kadar olan tokenlara bakabileceği anlamına gelir. Gelecekteki tokenlara "ileriye bakamaz". Bu davranış, gelecekteki pozisyonları engelleyen bir attention mask ile uygulanır.
+
+Örnek: "Kedi ___ üzerine oturdu" cümlesinde boşluktaki token tahmin edilirken model yalnızca boşluktan önceki tokenlara bakabilir. Boşluktan sonraki tokenlar henüz üretilmediği için attention hesabına katılmaz.
+
+LLM'lerin soldan sağa doğru, her seferinde bir token üreterek metin oluşturmasının nedeni budur.
+
+Bu özellik güvenlik açısından önemlidir çünkü modelin davranışının aşamalı olarak etkilenebileceği anlamına gelir. Bir saldırgan, gerçek kötü amaçlı isteği yapmadan önce modelin "dikkat ortamını" yönlendirerek, birden fazla aşamada kademeli olarak bağlam oluşturabilir.
+
+LLM Eğitiminin Aşamaları
+LLM'lerin nasıl eğitildiğini anlamak, onların zayıf noktalarını anlamak için çok önemlidir. Her eğitim aşaması belirli güvenlik hususlarını ortaya koyar.
+
+Aşama 1: Eğitim Öncesi
+Ön eğitim sırasında model, büyük miktarda metin verisine (genellikle terabaytlarca web sayfası, kitap, kod ve akademik makale) maruz kalır. Eğitimin amacı basittir: bir sonraki token'ı tahmin etmek. Model milyarlarca örnek görür ve tahminlerini iyileştirmek için parametrelerini ayarlar.
+
+Güvenlik açısından etkileri:
+
+Model, potansiyel olarak hassas bilgiler (e-posta adresleri, telefon numaraları, API anahtarları, kod parçacıkları) dahil olmak üzere eğitim verilerinden elde edilen kalıpları ezberler.
+Eğitim verilerinde mevcut olan sapmalar, modelin parametrelerine gömülü hale gelir.
+Eğitim verilerinde talimat metni mevcut olduğundan model, talimatları izlemeyi öğrenir.
+Aşama 2: Denetimli Fine-tuning (SFT)
+Ön eğitimden sonra model, Supervised Fine-Tuning (SFT; Denetimli Fine-Tuning) aşamasında soru-cevap çiftlerinden ve talimat takip örneklerinden oluşan seçilmiş veri kümeleri üzerinde fine-tuning'e tabi tutulur. İnsan değerlendiriciler veya veri etiketleyiciler, modelin farklı girdilere nasıl yanıt vermesi gerektiğine dair yüksek kaliteli örnekler hazırlar.
+
+Güvenlik açısından etkileri:
+
+Fine-tuning verisinin kalitesi güvenliği doğrudan etkiler. Zehirli fine-tuning verileri backdoor davranışlarına yol açabilir.
+Model, istismar edilebilecek ölçüde "yardımcı" olmayı öğrenebilir; yani yanıtlamaması gereken soruları yanıtlama eğilimi gösterebilir.
+Aşama 3: İnsan Geri Bildiriminden Takviyeli Öğrenme (RLHF)
+Reinforcement Learning from Human Feedback (RLHF; İnsan Geri Bildiriminden Takviyeli Öğrenme) aşamasında, model aynı prompt için birden fazla yanıt üretir ve insan değerlendiriciler bunları en iyiden en kötüye doğru sıralar. Bu sıralamalara göre bir reward model eğitilir ve ardından LLM, reward model'iyle yüksek puan alan çıktılar üretecek şekilde optimize edilir.
+
+Güvenlik açısından etkileri:
+
+RLHF, modellere zararlı istekleri reddetmeyi öğreten birincil mekanizmadır. Ancak bu, temel bir yetenek kısıtlaması değil, davranışsal bir değişikliktir.
+Model, isteklerin RLHF eğitiminin kapsamadığı şekillerde yeniden ifade edilmesiyle atlanabilecek "yüzey düzeyinde" reddetme kalıplarını öğrenir.
+Reward Hacking: Model, aslında güvenli veya yararlı olmasa da, reward model'iyle yüksek puan alan yanıtlar üretmeyi öğrenebilir.
+Aşama 4: Constitutional AI / Direct Preference Optimization (DPO)
+Bazı sağlayıcılar ek alignment teknikleri kullanır. Constitutional AI, modeli kendi çıktılarını bir dizi ilkeye göre değerlendirecek şekilde eğitir. Direct Preference Optimization (DPO; Doğrudan Tercih Optimizasyonu) ise ayrı bir reward model olmadan tercih verilerinden doğrudan optimizasyon sağlayan daha basit bir RLHF alternatifidir.
+
+Güvenlik açısından etkileri:
+
+Bu teknikler ek güvenlik katmanları ekler ancak temel mimari güvenlik açıklarını ortadan kaldırmaz.
+Kullanılan özel hizalama tekniğini anlayan bir saldırgan, özellikle zayıf yönlerini hedef alan promptlar oluşturabilir.
+Training pipeline özeti:
+
+Pre-training: Ham bilgi ve next-token prediction yeteneği.
+Supervised Fine-Tuning: Talimatları takip etme davranışı.
+RLHF / DPO: Neyi reddedeceğini öğrenme ve safety alignment.
+Constitutional AI: İlkelere göre öz değerlendirme.
+Her katman güvenliği artırır ancak hiçbiri mimari olarak zorunlu değildir. Tüm güvenlik önlemleri, modelin parametre alanında öğrenilmiş davranışlar olarak bulunur; ayrı bir mimari yetki sınırı oluşturmaz.
+
+LLM Davranışını Etkileyen Temel Parametreler
+Bir API aracılığıyla bir LLM ile etkileşimde bulunulduğunda, modelin çıktısı çeşitli parametreler tarafından kontrol edilir. Bu parametreleri anlamak hem saldırganlar (bunları manipüle edebilecek olanlar) hem de savunanlar (bunları güvenli bir şekilde yapılandırması gerekenler) için çok önemlidir.
+
+Sıcaklık (Temperature)
+Sıcaklık, modelin çıktısının rastgeleliğini kontrol eder. Token seçiminden önce olasılık dağılımını değiştirir.
+
+Temperature örnekleri:
+
+0.0: Deterministic. Model her zaman en olası sonraki tokenı seçer. Gerçek görevler, kod üretimi ve güvenlik açısından kritik uygulamalar için uygundur.
+0.7: Balanced. Biraz rastgelelik ekler; çıktı daha çeşitli ama hâlâ tutarlı olabilir. Yaratıcı yazma ve konuşmaya dayalı uygulamalar için kullanılabilir.
+1.5+: High randomness. Düşük olasılıklı tokenlar daha olası hale gelir; çıktı tutarsız veya beklenmedik olabilir. Üretim sistemleri için risklidir.
+Güvenlik etkisi: Daha yüksek temperature değerleri, modelin güvenlik eğitimini atlayan çıktılar üretmesine neden olabilir. Güvenlikle ilgili davranışlar öğrenilmiş pattern'lerdir; yüksek temperature değerlerinde daha düşük olasılıklı ve potansiyel olarak güvensiz token dizileri daha olası hale gelir.
+
+Üst-p (Çekirdek Örnekleme)
+Top-p, token seçimini, kümülatif olasılığı p eşiğini aşan en küçük token seti ile sınırlar.
+
+top_p = 0.1: Yalnızca toplam olasılık kütlesinin ilk yüzde 10'undaki tokenları dikkate alır; çıktı daha odaklı ve öngörülebilirdir.
+top_p = 0.9: Toplam olasılık kütlesinin ilk yüzde 90'ındaki tokenları dikkate alır; çıktı daha çeşitlidir.
+top_p = 1.0: Tüm tokenları dikkate alır; maksimum çeşitlilik sağlar.
+Üst-k (Top-k)
+Top-k, token seçimini en olası k token ile sınırlar.
+
+top_k = 1: Yalnızca en olası tek token; tam deterministik davranışa yakındır.
+top_k = 40: En olası 40 token arasından seçim yapar.
+top_k = 100: En olası 100 token arasından seçim yapar.
+Maksimum Token
+Modelin yanıtında üreteceği maksimum token sayısı. Bu çok sert bir kesinti.
+
+Güvenlik etkisi: max_tokens çok yüksek bir değere ayarlanırsa, bir saldırgan modelin son derece uzun çıktılar üretmesine, API kredileri ve bilgi işlem kaynaklarının tüketilmesine (bir tür hizmet reddi) neden olabilir. Çok düşük bir değere ayarlanırsa güvenlikle ilgili sorumluluk reddi beyanları kesilebilir veya talimatlar reddedilebilir.
+
+Durdurma Dizileri
+Oluşturulduğunda modelin oluşturulmasının durdurulmasına neden olan metin dizileri. Genellikle modelin belirli bir noktadan sonra üretilmesini önlemek için kullanılır.
+
+Güvenlik etkisi: Durdurma dizilerini bilen bir saldırgan, modeli kandırarak durdurma dizisini erken oluşturmasını sağlayacak ve önemli güvenlik uyarılarını kısaltacak girdiler oluşturabilir.
+
+Sistem Prompt ve Kullanıcı Prompt'u Karşılaştırması
+Çoğu modern LLM API'si, sistem prompt'lar ile kullanıcı promptları arasında ayrım yapar:
+
+Komut / çıktı
+Kodu kopyala
+messages = [
+{"role": "system", "content": "Siz BankCorp için yardımcı bir müşteri hizmetleri temsilcisisiniz. Hesap numaralarını veya şifrelerini asla açıklamayın. Hesap ayrıntılarını konuşmadan önce daima kimliği doğrulayın."},
+{"role": "user", "content": "Hesap bakiyem nedir?"},
+{"role": "assistant", "content": "Bakiyenizi kontrol etmenize yardımcı olmaktan memnuniyet duyarım. Güvenlik nedeniyle lütfen önce kimliğinizi doğrulayabilir misiniz?"}
+]
+Güvenlik etkisi: Rol ayrımına rağmen sistem prompt ve kullanıcı prompt'u, modelin context window'unda aynı token dizisi içinde bulunur. Model, sistem prompt'lara daha yüksek öncelik vermeyi öğrenmiştir; ancak bu mimari bir zorunluluk değil, davranışsal bir pattern'dir. Bu nedenle sistem prompt çıkarma ve override saldırıları mümkündür.
+
+LLM Güvenliği Neden Önemlidir?
+LLM'lerin kritik uygulamalara hızla konuşlandırılması, yeni ve benzeri görülmemiş bir saldırı yüzeyi yarattı. LLM'ler artık aşağıdakilere yerleştirilmiştir:
+
+Sağlık hizmetleri: Hastaların önceliklendirilmesi, tıbbi kayıtların özetlenmesi, sağlıkla ilgili soruların yanıtlanması.
+Finansal hizmetler: Kredi başvurularının işlenmesi, dolandırıcılığın tespit edilmesi, müşterilere danışmanlık yapılması.
+Hukuk teknolojisi: Sözleşmeleri analiz etme, hukuki özetleri hazırlama, araştırma yürütme.
+Müşteri hizmetleri: Müşteri şikayetlerinin ele alınması, iadelerin işlenmesi, hesapların yönetilmesi.
+Yazılım geliştirme: Kod yazma ve inceleme, altyapıyı yönetme, hata ayıklama.
+Devlet ve savunma: İstihbarat analizi, belge işleme, karar desteği.
+Bu dağıtımların her biri benzersiz riskler taşır. Müşteri hizmetleri sohbet robotuna yönelik Prompt Injection saldırısı, müşteri verilerinin sızdırılmasına neden olabilir. Sağlık hizmeti yapay zekasına yönelik bir saldırı, tehlikeli tıbbi tavsiyelere yol açabilir. Kod asistanına yönelik bir saldırı, üretim yazılımında güvenlik açıkları ortaya çıkarabilir.
+
+LLM güvenlik açıklarının sonuçları teorik değildir. Gerçek dünyadaki olaylar ciddiyeti zaten göstermiştir:
+
+2023 yılında, bir Chevrolet bayisi sohbet robotu, bir hedef kaçırma saldırısı yoluyla bir arabayı bir dolara satmayı kabul etmesi için kandırıldı.
+Samsung çalışanları, özel kaynak kodunu ChatGPT'ye yapıştırarak yanlışlıkla sızdırdı.
+Araştırmacılar, ChatGPT'nin kişisel olarak tanımlanabilir bilgiler de dahil olmak üzere eğitim verilerini aynen yeniden oluşturacak şekilde kullanılabileceğini gösterdi.
+Microsoft'un Copilot öncesi "Sydney" sohbet deneyimi, lansmanından kısa süre sonra jailbreak ve sistem prompt sızıntısı örnekleriyle gündeme geldi.
+LLM güvenliği alanı hızla gelişmektedir. Temel kavramları doğru anlamak; Büyük Dil Modelleriyle ilişkili saldırı yüzeylerini tanımlamak, güvenlik risklerini değerlendirmek ve uygulanabilir azaltma stratejileri geliştirmek için kritiktir.

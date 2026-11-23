@@ -1,0 +1,311 @@
+AI Red Teaming, yapay zeka (Artificial Intelligence, AI) sistemlerini güvenlik açıkları, önyargılar ve güvenlik hataları açısından sistematik olarak sınama uygulamasıdır. Geleneksel sızma testlerinden farklı olarak ayrı bir etik çerçeve gerektirir; çünkü burada "zafiyetler" çoğu zaman insan benzeri çıktı üreten bir sistemin manipüle edilmesini içerir ve zarar potansiyeli veri ihlallerinin ötesine geçerek yanlış bilgilendirme, ayrımcılık ve psikolojik manipülasyonu da kapsayabilir.
+
+AI Red Teaming Nedir?
+AI Red Teaming, güvenlik profesyonellerinin (Red Team üyeleri) gerçek dünyadaki saldırıları simüle ederek AI sistemlerindeki zayıflıkları bulmaya çalıştıkları adversarial bir değerlendirme metodolojisidir. Amaç, kötü niyetli aktörlerden önce güvenlik açıklarını tespit etmektir.
+
+AI Red Teaming, geleneksel sızma testlerinden birkaç önemli açıdan farklılık gösterir:
+
+Geleneksel Sızma Testi ile AI Red Teaming Karşılaştırması
+
+Geleneksel Sızma Testi:
+
+Hedef: Yazılım, ağlar, altyapı
+Araçlar: Tarayıcılar, yararlanma çerçeveleri, komut dosyaları
+Hedef: CVE'leri, yanlış yapılandırmaları ve kimlik doğrulama atlatmalarını bulmak
+Çıktı: Proof of Concept ile tekrarlanabilir exploit'ler
+Beceriler: Programlama, ağ, işletim sistemi iç yapıları
+AI Red Teaming:
+
+Hedef: AI modelleri, promptlar, hizalama, guardrails
+Araçlar: Hazırlanmış promptlar, davranış analizi, yaratıcılık
+Hedef: Güvenlik önlemlerini atlatmak, veri sızdırmak veya zararlı davranışı tetiklemek
+Çıktı: Saldırı promptları (çoğu zaman tutarlı biçimde tekrarlanamaz)
+Beceriler: Dilbilim, psikoloji, sosyal mühendislik, makine öğrenimi bilgisi
+AI Red Teaming Metodolojisi
+Yapılandırılmış bir AI Red Team çalışması şu aşamaları takip eder:
+
+Aşama 1: Keşif ve Kapsam Belirleme
+
+Hedef yapay zeka sistemini ve mimarisini tanımlayın
+Model türünü, sağlayıcıyı ve dağıtım yapılandırmasını belirleyin
+Saldırı yüzeyinin haritasını çıkarın (girdiler, çıkışlar, araçlar, entegrasyonlar)
+Kapsamı ve çalışma kurallarını tanımlayın
+Aşama 2: Tehdit Modelleme
+
+Potansiyel tehdit aktörlerini ve motivasyonlarını belirleyin
+Saldırı senaryolarını Open Worldwide Application Security Project (OWASP) LLM İlk 10 ile eşleyin
+Etki ve olasılığa göre riskleri önceliklendirin
+Aşama 3: Saldırı Uygulaması
+
+Prompt Injection saldırıları gerçekleştirin (doğrudan ve dolaylı)
+Sistem prompt'u çıkarmaya çalışın
+Bilgi ifşasını test edin
+Jailbreak teknikleriyle güvenlik guardrails'lerini sınayın
+Araç ve entegrasyon güvenliğini test edin
+Çıktı işleme güvenlik açıklarını değerlendirin
+Aşama 4: Analiz ve Raporlama
+
+Tüm bulguları önem dereceleriyle belgeleyin
+Tekrarlanabilirlik verileri sağlayın (N denemede başarı oranı)
+Her bulgu için önerilen hafifletici önlemleri dahil edin
+OWASP LLM Top 10 kategorisini kullanarak bulguları sınıflandırın
+Aşama 5: Düzeltme Doğrulaması
+
+Önlemler uygulandıktan sonra yeniden test edin
+Düzeltmelerin yeni güvenlik açıkları oluşturmadığını doğrulayın
+Önlemlerin dayanıklılığını değerlendirin (atlanabiliyorlar mı?)
+AI Red Teaming Etiği
+AI Red Teaming, geleneksel güvenlik testlerinde bulunmayan benzersiz etik hususları içerir.
+
+İkili Kullanım İkilemi
+Bu eğitimde öğretilen her saldırı tekniği, hem savunma (zafiyetleri bulma ve düzeltme) hem de saldırı (sistemleri kötü amaçlarla kullanma) amaçları için kullanılabilir. Bu ikili kullanım niteliği her uygulayıcı için bir sorumluluk yaratır.
+
+AI Red Teaming için etik ilkeler:
+
+Yetkilendirme: Sistem sahibinin açık yazılı izni olmadan sistemleri asla test etmeyin.
+Kapsam uyumu: Tanımlanan kapsam dahilinde kalın. Kapsam dışında bir güvenlik açığı bulursanız bunu bildirin ancak daha fazla istismar etmeyin.
+Minimum etki: Bir güvenlik açığını göstermek için gereken en az müdahaleci teknikleri kullanın.
+Veri işleme: Test sırasında hassas veriler çıkarırsanız, bunu üzerinde anlaşılan veri işleme prosedürlerine göre kullanın. Çıkarılan kişisel bilgileri asla saklamayın veya paylaşmayın.
+Sorumlu açıklama: Bulguları uygun kanallar aracılığıyla bildirin ve satıcıya herhangi bir kamuya açıklama yapılmadan önce düzeltmesi için zaman tanıyın.
+İkincil hasar yok: Testinizin gerçek kullanıcıları veya üretim verilerini etkilemediğinden emin olun.
+Etik Sınırlar
+Etik AI Red Teaming Sınırları:
+
+Kabul Edilebilir:
+
+Belirlenen sistemlerde yetkilendirme ile test etme
+Sızıntı riskini değerlendirmek için sistem prompt çıkarma denemeleri yapma
+Kontrollü ortamlarda jailbreak'lerin gösterilmesi
+Sentetik veriler kullanılarak PII sızıntısının test edilmesi
+Savunma amaçlı saldırı tekniklerinin belgelenmesi
+Sorumlu açıklamayla araştırma yayınlama
+Kabul Edilemez:
+
+Üretim sistemlerini izinsiz test etme
+Gerçek kullanıcı verilerinin çıkarılması ve saklanması
+Keşfedilen güvenlik açıklarını kişisel kazanç için kullanma
+Satıcıya bildirimde bulunmadan sıfır gün saldırılarını yayınlama
+Yalnızca yapay zeka sistemlerine zarar vermek için tasarlanmış araçlar oluşturma
+Erişim elde etmek için yapay zeka şirketi çalışanlarına sosyal mühendislik uygulama
+Çalışan jailbreak'leri düzeltmeler olmadan herkese açık olarak paylaşma
+Yasal Çerçeve
+AB Yapay Zeka Yasası
+Avrupa Birliği Yapay Zeka Yasası (AB Yapay Zeka Yasası), yapay zeka sistemleri için risk temelli ve kapsamlı bir düzenleme çerçevesidir. Komisyonun güncel uygulama zaman çizelgesine göre yasa 1 Ağustos 2024'te yürürlüğe girmiştir; yasaklı uygulamalar ve AI literacy yükümlülükleri 2 Şubat 2025'ten, genel amaçlı AI model yükümlülükleri 2 Ağustos 2025'ten itibaren uygulanmaya başlamıştır. Kuralların çoğu 2 Ağustos 2026'da uygulanır; yüksek riskli bazı alanlar için uygulama tarihleri AI Omnibus süreciyle daha ileriye alınmıştır: belirli yüksek riskli alanlardaki sistemler için 2 Aralık 2027, regüle ürünlere gömülü yüksek riskli sistemler için 2 Ağustos 2028. Güvenlik profesyonellerinin bu çerçeveyi anlaması gerekir çünkü bu, yapay zeka sistemlerinin nasıl test edilebileceğini, dağıtılabileceğini ve izlenebileceğini doğrudan etkiler.
+
+Risk Sınıflandırma Sistemi:
+
+AB Yapay Zeka Yasası Risk Kategorileri:
+
+KABUL EDİLEMEZ RİSK (Yasaklı):
+
+Hükümetlerin sosyal puanlama sistemleri
+Kamusal alanlarda gerçek zamanlı biyometrik tanımlama (istisnalarla)
+Savunmasız grupların manipülasyonu
+İşyerinde ve eğitimde duygu tanıma
+YÜKSEK RİSK (Kesinlikle Düzenlemelere Tabi):
+
+Kritik altyapıda yapay zeka (enerji, ulaşım, su)
+Eğitim ve istihdam kararlarında yapay zeka
+Kolluk kuvvetleri ve sınır kontrolünde yapay zeka
+Sağlık hizmetleri ve tıbbi cihazlarda yapay zeka Gereksinimleri: Risk değerlendirmeleri, insan gözetimi, şeffaflık, doğruluk ölçümleri, siber güvenlik önlemleri
+SINIRLI RİSK (Şeffaflık Yükümlülükleri):
+
+Sohbet robotları (Yapay zeka olduklarını açıklamalıdır)
+Deepfake oluşturucular (çıktıyı etiketlemelidir)
+Duygu tanıma sistemleri (kullanıcıları bilgilendirmelidir)
+MİNİMUM RİSK (Kısıtlama Yok):
+
+Yapay zeka destekli oyunlar
+Spam filtreleri
+Çoğu genel amaçlı yapay zeka asistanı
+AI Red Teaming için Çıkarımlar:
+
+Uygulama tarihi gelmiş yüksek riskli yapay zeka sistemleri, güvenlik testlerini de içeren uygunluk değerlendirmelerinden geçmelidir.
+Genel amaçlı AI ve frontier model sağlayıcıları, adversarial testler de dahil olmak üzere model değerlendirmeleri yapmalıdır.
+Red Teaming; uygunluk değerlendirmeleri, post-market monitoring ve siber güvenlik kontrolleri için pratik bir güvenlik test yöntemidir.
+Uyumsuzluğa ilişkin cezalar kademelidir: 35 milyon Euro'ya kadar veya yasaklanmış yapay zeka uygulamalarından elde edilen küresel yıllık gelirin %7'sine kadar; diğer ihlaller için 15 milyon Euro'ya veya %3'e kadar.
+GDPR ve Yapay Zeka Güvenliği
+Genel Veri Koruma Yönetmeliği (General Data Protection Regulation, GDPR), AB'de ikamet edenlerin kişisel verilerini işleyen tüm yapay zeka sistemleri için geçerlidir. Çeşitli GDPR ilkeleri LLM güvenliğiyle doğrudan ilgilidir:
+
+Veri Minimizasyonu (Madde 5(1)(c)): LLM'ler gerekenden fazla kişisel veri konusunda eğitilmemeli veya bu verileri saklamamalıdır. LLM'lerin eğitim verilerini ezberlemesi nedeniyle bu zordur.
+
+Silme Hakkı (Madde 17): Kişiler, kişisel verilerinin silinmesini talep edebilir. LLM'ler için bu teknik olarak zordur çünkü veriler, silinmeye izin veren bir veritabanında saklanmaz, model ağırlıklarında kodlanır.
+
+Veri Koruma Etki Değerlendirmesi (Madde 35): Profil oluşturma ve otomatik karar almayı içeren yüksek riskli işlemler için gereklidir. AI Red Teaming bu değerlendirmenin bir parçası olabilir.
+
+İhlal Bildirimi (Madde 33): Bir LLM kişisel verileri sızdırırsa bu, 72 saat içinde bildirim gerektiren bir veri ihlali teşkil edebilir. LLM dağıtımları için aşağıdaki sorular kontrol edilmelidir:
+
+GDPR ile İlgili Hususlar:
+
+Eğitim Verileri:
+
+Eğitim setlerindeki kişisel veriler için izin alındı mı?
+Bireyler silme hakkını kullanabilir mi?
+Eğitim verileri gereken seviyeye küçültülmüş mü?
+Çıkarım (Çalışma Zamanı):
+
+Model kullanıcı girişlerini ezberliyor ve tekrarlıyor mu?
+Kullanıcılar arası veri sızıntısı meydana gelebilir mi?
+Kullanıcı konuşmaları saklanıyor mu ve ne kadar süreyle saklanıyor?
+Çıktı:
+
+Model yanıtlarda PII oluşturuyor mu?
+PII içeren eğitim verilerinin ifşa edilmesi yapılabilir mi?
+Çıktılar GDPR uyumlu bir şekilde günlüğe kaydediliyor mu?
+Ulusal Siber Güvenlik Yasaları
+AB çapındaki düzenlemelere ek olarak, bireysel ülkelerde AI Red Team çalışmasını etkileyen siber güvenlik yasaları bulunmaktadır:
+
+Amerika Birleşik Devletleri: Henüz kapsamlı bir yapay zeka düzenlemesi yoktur, ancak sektöre özel kurallar bulunur (sağlık hizmeti yapay zekası için Health Insurance Portability and Accountability Act (HIPAA), hizmet sağlayıcılar için Security Operations Center (SOC) 2). Güvenli, Emniyetli ve Güvenilir Yapay Zeka ile ilgili Ekim 2023 tarihli Başkanlık Kararnamesi Red Team çalışmalarını teşvik etmektedir.
+Birleşik Krallık: Yapay Zeka Güvenlik Enstitüsü, öncü yapay zeka modellerinin değerlendirmelerini yürütür. Birleşik Krallık'ın yaklaşımı, AB'nin kuralcı çerçevesinden daha ilkelere dayalıdır.
+Çin: Üretken Yapay Zeka Hizmetlerinin Yönetimine İlişkin Geçici Önlemler, dağıtımdan önce güvenlik değerlendirmelerinin yapılmasını gerektirir.
+Yapay Zeka Sistemleri için Bug Bounty Programları
+Birçok büyük yapay zeka sağlayıcısının özellikle LLM güvenlik açıklarını kapsayan Bug Bounty programları vardır.
+
+AI Bug Bounty Kapsamı
+Tipik Yapay Zeka Bug Bounty Kapsamı:
+
+Kapsamda:
+
+Üretim modellerinden sistem prompt çıkarma
+Hassas verilerin ifşa edilmesi (PII, API anahtarları, dahili veriler)
+Yapay zeka aracılığıyla kimlik doğrulama ve yetkilendirmeyi atlatma
+Kullanıcılararası veri sızıntısı
+AI aracı kullanımı yoluyla SSRF
+AI kod yorumlayıcıları aracılığıyla kod yürütme
+Önemli güvenlik filtre geçişleri (gerçek dünyada etkili)
+KAPSAM DIŞI (genellikle):
+
+Genel jailbreak'ler (modelin kötü sözler söylemesine neden olmak)
+Bilinen model sınırlamaları (halüsinasyonlar)
+Somut bir etkiye yol açmayan Prompt Injection
+Model yanlılığı raporları (ölçülebilir bir zarara neden olmadıkları sürece)
+Altyapıya fiziksel erişim gerektiren saldırılar
+Şirket çalışanlarının sosyal mühendisliği
+API uç noktalarına yönelik DDoS saldırıları
+Başlıca Yapay Zeka Bug Bounty Programları
+Yapay Zeka Bug Bounty Programları (değerlendirme sırasında doğrulanacak örnekler):
+
+OpenAI:
+
+Platform: Bugcrowd
+Kapsam: ChatGPT, API, görüntü üretimi özellikleri, tool/agent entegrasyonları
+Ödüller: Program sayfasında belirtilen güncel aralığa göre değişir
+Not: Model davranışı sorunları (jailbreak'ler), veri ifşasına yol açmadığı sürece genellikle kapsam dışıdır
+Google (Gemini/DeepMind):
+
+Platform: Google VRP
+Kapsam: Google ürünlerinde Gemini ve AI entegrasyonları
+Ödüller: Program sayfasında belirtilen güncel aralığa göre değişir
+Not: Yapay zekaya özgü kategorileri içerir
+Meta:
+
+Platform: Meta Bug Bounty
+Kapsam: Llama modelleri, Meta AI ürünleri
+Ödüller: Program sayfasında belirtilen güncel aralığa göre değişir
+Not: Açık kaynak modelindeki güvenlik açıkları dahildir
+Anthropic:
+
+Program: Sorumlu açıklama
+Kapsam: Claude modelleri, API
+Not: Güvenlikle ilgili yeni bulgulara odaklanın
+Microsoft:
+
+Platform: MSRC
+Kapsam: Copilot, Azure AI hizmetleri ve ilgili AI entegrasyonları
+Ödüller: Önem derecesine göre
+Sorumlu Açıklama Süreci
+Bir yapay zeka sisteminde bir güvenlik açığı keşfettiğinizde, sorumlu açıklama yapılandırılmış bir süreç izler:
+
+Sorumlu Açıklama Zaman Çizelgesi:
+
+0. Gün: Keşif
+
+Güvenlik açığını kapsamlı bir şekilde belgeleyin
+Kanıtları yakalayın (kullanılan ekran görüntüleri, günlükler, promptlar)
+Şiddeti ve potansiyel etkiyi değerlendirin
+Gerekenden fazla istismar etmeyin
+1-3. Gün: Rapor
+
+Satıcının resmi kanalı aracılığıyla gönderin
+Şunları içerir: Açıklama, çoğaltma adımları, etki değerlendirmesi
+Dahil: Mümkünse önerilen hafifletme
+PII söz konusuysa raporu şifreleyin
+3-7. Gün: Teşekkür
+
+Satıcı raporun alındığını kabul eder
+Satıcı bir izleme kimliği atar
+İlk triyaj ve ciddiyet değerlendirmesi
+7-30. Gün: Soruşturma
+
+Satıcı bir düzeltmeyi araştırıyor ve geliştiriyor
+Araştırmacıdan ek bilgi istenebilir
+Satıcıdan düzenli durum güncellemeleri
+30-90. Gün: Düzeltme ve Doğrulama
+
+Satıcı düzeltmeyi dağıtıyor
+Araştırmacı düzeltmeyi doğruluyor
+Satıcı karmaşık sorunlar için uzatılmış ambargo talep edebilir
+90+. Gün: Açıklama
+
+Koordineli kamuya açıklama
+Araştırmacı bir blog yazısı veya makale yayınlayabilir
+Varsa CVE atanır
+Yapay Zeka Güvenlik Açığı Raporu Yazma
+Profesyonel bir yapay zeka güvenlik açığı raporu şunları içermelidir:
+
+Yapay Zeka Güvenlik Açığı Raporu Şablonu:
+
+Komut / çıktı
+Kodu kopyala
+Başlık: [Güvenlik açığının açık ve kısa açıklaması]
+
+Önem Derecesi: [Kritik / Yüksek / Orta / Düşük] OWASP LLM Kategorisi: [LLM01-LLM10] MITRE
+ATLAS: [Varsa Teknik Kimliği]
+
+Özet:
+Güvenlik açığının ve etkisinin kısa açıklaması.
+
+Etkilenen Sistem:
+- Ürün adı ve sürümü
+- Model tanımlayıcı (biliniyorsa)
+- Dağıtım türü (API, web arayüzü, eklenti)
+
+Çoğaltma Adımları:
+
+1. [URL/uç nokta]'ya gidin:
+
+2. Aşağıdaki prompt'u gönderin: [tam prompt]
+
+3. Yanıtı gözlemleyin: [beklenen güvenlik açığı davranışı]
+
+Başarı Oranı: Y denemeden X'i (%Z) Sıcaklık ayarı: [biliniyorsa]
+
+Etki:
+Bir saldırgan neyi başarabilir? Hangi veriler risk altında? Kim etkileniyor (kullanıcılar,
+şirket, üçüncü taraflar)?
+
+Konsept Kanıtı:
+[Ekran görüntüleri, yanıt günlükleri, API çağrıları] NOT: Bulunan tüm gerçek PII'leri çıkarın.
+
+Önerilen Azaltma:
+[Güvenlik açığının giderilmesine yönelik öneriniz]
+
+Ortam:
+- Test tarihi ve saati
+- Kullanılan tarayıcı/istemci
+- İlgili herhangi bir konfigürasyon
+AI Red Team Çerçeveleri ve Standartları
+AI Red Teaming uygulamasına çeşitli çerçeveler rehberlik eder:
+
+NIST Yapay Zeka Risk Yönetimi Çerçevesi (AI RMF): Adversarial testler dahil olmak üzere yapay zeka risklerini yönetmek için yapılandırılmış bir yaklaşım sağlar. https://www.nist.gov/itl/ai-risk-management-framework
+MITRE ATLAS: Geleneksel siber güvenlik için MITRE ATT&CK model alınarak modellenen, yapay zeka sistemlerine yönelik adversarial taktikler ve tekniklerden oluşan bir bilgi tabanı. https://atlas.mitre.org/
+Microsoft AI Red Team: Microsoft'un kapsam tanımı, saldırı sınıflandırması ve raporlama standartları dahil olmak üzere AI Red Teaming için yayınlanmış metodolojisi.
+Google Güvenli Yapay Zeka Çerçevesi (SAIF): Red Teaming dahil olmak üzere Google'ın yapay zeka sistemlerini korumaya yönelik çerçevesi.
+OWASP Yapay Zeka Güvenlik ve Gizlilik Kılavuzu: Yapay zeka güvenlik testi metodolojisine ilişkin kapsamlı rehberlik. https://owasp.org/www-project-ai-security-and-privacy-guide/
+Temel Çıkarımlar
+AI Red Teaming, tıpkı geleneksel sızma testlerinde olduğu gibi açık yetkilendirme gerektirir. Sistemleri asla yazılı izin olmadan test etmeyin.
+AB Yapay Zeka Yasası dünya çapındaki en kapsamlı Yapay Zeka düzenlemesidir. Yüksek riskli yapay zeka sistemleri zorunlu güvenlik değerlendirmeleri gerektirir.
+GDPR, kişisel verileri işleyen tüm LLM için geçerlidir. Veri ezberleme eğitimi benzersiz uyumluluk zorlukları yaratır.
+Yapay zeka sistemlerine yönelik bug bounty programlarının belirli kapsam tanımları vardır. Genel jailbreak'ler genellikle kapsam dışındadır; veri ifşası kapsam dahilindedir.
+Yapay zeka açıklarına ilişkin sorumlu açıklama zaman çizelgeleri genellikle 90 günlük bir süreyi takip eder.
+Bu eğitimde öğretilen her teknik etik ve yasal sınırlar dahilinde kullanılmalıdır. Yetkilendirme, kapsam uyumu ve sorumlu açıklama tartışılamaz.
